@@ -5,6 +5,10 @@ from .serializers import UserRegistrationSerializer, UserLogInSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework.authtoken.models import Token
+from ..models import MyProject
+from .serializers import MyProjectSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 
 
 class UserRegistrationView(APIView):
@@ -68,3 +72,34 @@ class UserLogoutView(APIView):
 
         # Return a success message
         return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+    
+
+class MyProjectListCreateAPIView(ListCreateAPIView):
+    """
+    Handles listing all projects (accessible to anyone)
+    and creating a new project (restricted to authenticated users).
+    """
+    queryset = MyProject.objects.all()
+    serializer_class = MyProjectSerializer
+
+    def get_permissions(self):
+        # Allow anyone to list projects, but restrict creation to authenticated users
+        if self.request.method == "POST":
+            return [IsAuthenticatedOrReadOnly()]
+        return [AllowAny()]
+
+
+class MyProjectDetailAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    Handles retrieving (accessible to anyone),
+    updating, and deleting a single project (restricted to authenticated users).
+    """
+    queryset = MyProject.objects.all()
+    serializer_class = MyProjectSerializer
+
+    def get_permissions(self):
+        # Allow anyone to retrieve a project
+        if self.request.method in ["GET"]:
+            return [AllowAny()]
+        # Restrict update and delete operations to authenticated users
+        return [IsAuthenticatedOrReadOnly()]

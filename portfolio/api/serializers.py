@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from ..models import MyProject
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=8)
@@ -38,3 +39,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserLogInSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
+
+
+class MyProjectSerializer(serializers.ModelSerializer):
+    # Custom logic for live and code_link to handle null cases
+    live = serializers.SerializerMethodField()
+    code_link = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MyProject
+        fields = '__all__'
+
+    def get_live(self, obj):
+        return obj.live if obj.live else None
+
+    def get_code_link(self, obj):
+        return obj.code_link if obj.code_link else None

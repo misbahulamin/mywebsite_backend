@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-gryk7gu=xe4xve7e(xd6b09&#j3gjhp7!sz-69d_$dr-$k^hlg
 DEBUG = True
 
 ALLOWED_HOSTS = ["123.0.0.1", ".vercel.app"]
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
 
 
 # Application definition
@@ -150,8 +152,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Static files (CSS, JavaScript, etc.)
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (Uploaded files like images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
